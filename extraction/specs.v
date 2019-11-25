@@ -37,33 +37,6 @@ Unset Printing Implicit Defensive.
 
 (** * Conversion between machine integers and bit sequences *)
 
-(* Enumeration for tuples, from G. Gonthier's mailing list post at:
-
- *)
-Section AllPairsExtra.
-
-Lemma map_allpairs S T R O s t (op : S -> T -> R) (f : R -> O) :
-  [seq f x | x <- allpairs op s t] = [seq f (op x y) | x <- s, y <- t].
-Proof.
-Admitted.
-(* FIXME math-comp 1.9.0 *)
-(* elim: s t => [|x s ihs] [|y t] //=; rewrite -ihs map_cat -map_comp. *)
-
-Lemma allpairss0 S T R s (op : S -> T -> R) :
-    [seq op x y | x <- s, y <- [::]] = [::].
-Proof. by elim s. Qed.
-
-Lemma allpairs_map S T R U V s t (f : S -> T -> R) (g : U -> S) (h : V -> T) :
-  allpairs f (map g s) (map h t) = allpairs (fun x y => f (g x) (h y)) s t.
-Proof.
-Admitted.
-(* FIXME math-comp 1.9.0 *)
-(* elim: s t => [|x s ihs] [|y t] //=; first by rewrite !allpairss0. *)
-(* by rewrite -ihs -map_comp. *)
-(* Qed. *)
-
-End AllPairsExtra.
-
 Section TupleEnum.
 
 Fixpoint all_tuples T (e : seq T) n : seq (n.-tuple T) :=
@@ -80,10 +53,7 @@ Fixpoint all_seqs T (e : seq T) n : seq (seq T) :=
 
 Lemma all_tuplesE T (e : seq T) n :
   map val (all_tuples e n) = all_seqs e n.
-Proof.
-Admitted.
-(* FIXME math-comp 1.9.0 *)
-(* by elim: n => //= n <-; rewrite !map_allpairs -{3}[e]map_id allpairs_map. *)
+Proof. by elim: n => //= n <-; rewrite map_allpairs allpairs_mapr. Qed.
 
 (* Thanks to George Gonthier *)
 Lemma perm_enum_tuples n (T : finType) :
